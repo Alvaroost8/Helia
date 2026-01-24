@@ -1,0 +1,24 @@
+Mail:
+  description: "Representa un correo electrónico"
+  type: object
+  properties:
+    id:
+      type: string
+      description: "Identificador único del correo"
+    remitente:
+      type: string
+      description: "Dirección de correo del remitente"
+    destinatario:
+      type: string
+      description: "Dirección de correo del destinatario principal"
+    asunto:
+      type: string
+      description: "Asunto del correo (máximo 100 caracteres)"
+    cuerpo:
+      type: string
+      description: "Mensaje completo"
+    fecha:
+      type: string
+      format: date-time
+      description: "Fecha de recepción o envío del correo"
+

@@ -1,0 +1,39 @@
+tools:
+  - name: get_last_emails
+    description: "Devuelve los últimos num_emails emails recibidos"
+    inputs:
+      num_emails:
+        type: integer
+        description: "Número de emails a devolver (default: 5)"
+    outputs: 
+      lista_emails:
+        type: list
+        items:
+          $ref: "#/Mail"
+        description: "Lista de emails"
+  
+  - name: send_email
+    description: "Envía un email"
+    inputs:
+      destinatario:
+        type: string
+        description: "Cuenta de correo a la que se envía"
+      asunto:
+        type: string
+        description: "Asunto del correo (máximo 100 carácteres)"
+      cuerpo:
+        type: string
+        description: "Mensaje completo"
+      ind_ia:
+        type: bool
+        description: "Indicador de añadir si el correo ha sido escrito por una IA (default: True)"
+      ind_enviar:
+        type: bool
+        description: "Indicador de si enviar directamente el correo o generarlo como borrador (default: False)"
+    outputs:
+      status:
+        type: string
+        description: "Avisos de error o éxito"
+      ind_enviado:
+        type: bool
+        description: "Indicador de si el mail se ha enviado"
