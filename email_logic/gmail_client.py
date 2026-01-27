@@ -2,11 +2,10 @@ from googleapiclient.discovery import build
 import base64
 from datetime import datetime
 from bs4 import BeautifulSoup
-import auth
 import os
 from email.mime.text import MIMEText
 
-import auth
+from email_logic import auth
 
 def get_gmail_service():
     creds = auth.get_gmail_credentials()
