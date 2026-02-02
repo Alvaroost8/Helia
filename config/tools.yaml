@@ -13,7 +13,7 @@ tools:
         description: "Lista de emails"
   
   - name: send_email
-    description: "Envía un email"
+    description: "Envía un email formal"
     inputs:
       destinatario:
         type: string
@@ -23,7 +23,7 @@ tools:
         description: "Asunto del correo (máximo 100 carácteres)"
       cuerpo:
         type: string
-        description: "Mensaje completo"
+        description: "Mensaje completo, si no te lo pasan completo al redactarlo extrae el nombre del destinatario y usalo para dirigir el correo"
       ind_ia:
         type: bool
         description: "Opcional: Indicador de añadir si el correo ha sido escrito por una IA (default: False)"
