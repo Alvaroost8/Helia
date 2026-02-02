@@ -26,7 +26,7 @@ tools:
         description: "Mensaje completo"
       ind_ia:
         type: bool
-        description: "Indicador de añadir si el correo ha sido escrito por una IA (default: True)"
+        description: "Indicador de añadir si el correo ha sido escrito por una IA (default: False)"
       ind_enviar:
         type: bool
         description: "Indicador de si enviar directamente el correo o generarlo como borrador (default: False)"

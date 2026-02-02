@@ -40,20 +40,15 @@ def _get_body_from_payload(payload):
 
     # Caso simple
     if payload.get("body", {}).get("data"):
-        print("joder")
         return decode(payload["body"]["data"])
 
     # Caso multipart
     parts = payload.get("parts", [])
-    html_body = None
 
     for part in parts:
         if "parts" in part.keys():
-            for p in part.get("parts", []):
-                part=p
-                break
+            part=part.get("parts", [])[0]
 
-        mime_type = part.get("mimeType")
         data = part.get("body", {}).get("data")
 
         if not data:
@@ -61,13 +56,9 @@ def _get_body_from_payload(payload):
 
         decoded = decode(data)
 
-        if mime_type == "text/plain":
-            if(is_html(decoded)):
-                return html_to_text(decoded)
-            return decoded
-
-        if mime_type == "text/html":
+        if(is_html(decoded)):
             return html_to_text(decoded)
+        return decoded
 
     return ""
 
@@ -102,7 +93,7 @@ def get_last_emails(max_results=5):
 
     return emails
 
-def send_email(destinatario, asunto, cuerpo, ind_ia=True, ind_enviar=True):
+def send_email(destinatario, asunto, cuerpo, ind_ia=False, ind_enviar=False):
     service = get_gmail_service()
 
     if ind_ia:
@@ -121,20 +112,13 @@ def send_email(destinatario, asunto, cuerpo, ind_ia=True, ind_enviar=True):
         result = service.users().messages().send(
             userId="me", body=body).execute()
 
-        return {
-            "status": "sent",
-            "message_id": result["id"],
-            "ind_ia": ind_ia,
-            "ind_enviado": True
-        }
-
     else:
         result = service.users().drafts().create(
             userId="me", body={"message": body}).execute()
 
-        return {
-            "status": "draft",
-            "draft_id": result["id"],
-            "ind_ia": ind_ia,
-            "ind_enviado": False
-        }
+    return {
+        "status": "borrador" if not ind_enviar else "enviado",
+        "id": result["id"],
+        "ind_ia": ind_ia,
+        "ind_enviado": ind_enviar
+    }

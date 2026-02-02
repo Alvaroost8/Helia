@@ -1,20 +1,16 @@
-def decide_tool(user_input: str):
-    if "get" in user_input.lower():
-        return {
-            "tool": "get_last_emails",
-            "arguments": {
-                "num_emails": 3
-            }
-        }
+from dotenv import load_dotenv
+from openai import OpenAI
+import os
 
-    if "send" in user_input.lower():
-        return {
-            "tool": "send_email",
-            "arguments": {
-                "destinatario": "jon8gs8@gmail.com",
-                "asunto": "Demo Helia",
-                "cuerpo": "Correo enviado desde el agent"
-            }
-        }
+load_dotenv()
+OPENAI_KEY = os.getenv("OPENAI_KEY")
 
-    return None
+client = OpenAI(api_key=OPENAI_KEY)
+
+response = client.responses.create(
+  model="gpt-5-nano",
+  input="write a haiku about ai",
+  store=True,
+)
+
+print(response.output_text)
