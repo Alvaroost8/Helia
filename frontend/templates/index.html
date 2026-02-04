@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Helia – Demo</title>
+    <style>
+        /* Ocultar elementos con la clase hidden */
+        .hidden {
+            display: none;
+        }
+
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+
+            /* Esto hace que las líneas largas se dividan automáticamente */
+            white-space: pre-wrap; /* conserva saltos de línea, pero permite wrap */
+            word-wrap: break-word;  /* fuerza a cortar palabras largas si es necesario */
+        }
+
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f7;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background-color: #fff;
+            padding: 16px;
+            margin: 12px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 80px;
+            padding: 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            resize: vertical;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #357ABD;
+        }
+
+        #loading {
+            text-align: center;
+            font-weight: bold;
+            color: #555;
+        }
+
+        pre {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Helia</h1>
+    <p class="subtitle">Asistente inteligente para gestión de email</p>
+
+    <!-- INPUT -->
+    <section class="card">
+        <h2>Instrucción</h2>
+        <textarea
+            id="prompt"
+            placeholder="Ej: Responde a mi último correo diciendo que mañana a las 11 le llamo"
+        ></textarea>
+        <button id="run-btn">Ejecutar</button>
+    </section>
+
+    <!-- LOADING -->
+    <section id="loading" class="card hidden">
+        <p>⏳ Helia está pensando…</p>
+    </section>
+
+    <!-- RESPUESTA -->
+    <section id="response" class="card hidden">
+        <h2>Respuesta de Helia</h2>
+        <pre id="respuesta"></pre>
+    </section>
+</div>
+
+<script>
+  const runButton = document.getElementById("run-btn");
+  const promptInput = document.getElementById("prompt");
+  const responseContainer = document.getElementById("respuesta");
+  const loadingSection = document.getElementById("loading");
+  const responseSection = document.getElementById("response");
+
+  runButton.addEventListener("click", async () => {
+    const prompt = promptInput.value.trim();
+    if (!prompt) {
+      alert("Escribe un prompt primero");
+      return;
+    }
+
+    // Reset UI
+    responseContainer.innerText = "";
+    responseSection.classList.add("hidden");
+    loadingSection.classList.remove("hidden");
+
+    try {
+      const response = await fetch("/helia", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ prompt })
+      });
+
+      const data = await response.json();
+
+      // Mostrar respuesta
+      loadingSection.classList.add("hidden");
+      responseSection.classList.remove("hidden");
+
+      if (data.error) {
+        responseContainer.innerText = "❌ " + data.error;
+        return;
+      }
+
+      responseContainer.innerText = data.respuesta;
+
+      // Limpiar el textarea
+      promptInput.value = "";
+
+    } catch (err) {
+      loadingSection.classList.add("hidden");
+      responseSection.classList.remove("hidden");
+      responseContainer.innerText = "❌ Error inesperado: " + err.toString();
+    }
+  });
+</script>
+
+</body>
+</html>

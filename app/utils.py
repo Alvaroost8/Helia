@@ -23,5 +23,9 @@ def build_tools_definition() -> str:
                 lines.append(
                     f"    - {name} ({meta['type']}): {meta['description']}"
                 )
+        
+        if "reglas" in tool:
+            lines.append("  Reglas de la herramienta:")
+            lines.append(tool["reglas"])
 
     return "\n".join(lines)

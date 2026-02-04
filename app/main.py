@@ -1,19 +1,15 @@
 from app.agent import plan_step, execute_step, summarize_step
 from app.tool_runner import run_tool
 
-def main():
-    user_input = input("Usuario: ")
-
-    plan = plan_step(user_input)
+def helia(user_prompt):
+    plan = plan_step(user_prompt)
 
     if 'respuesta' in plan:
         if not plan['predefinida']:
             plan['respuesta'] += ("\n\nDisclaimer: esta respuesta ha sido generada " 
             "usando los conocimientos previos de Helia y podría ser errónea. ")
 
-        print("\nRespuesta:\n")
-        print(plan['respuesta'])
-        return
+        return {"respuesta": plan['respuesta']}
 
     tool_results = []
 
@@ -29,14 +25,15 @@ def main():
         "output": output,
     })
 
-    previous_output = output
-
     if len(steps) > 1:
         for step in steps[1:]:
+
+            previous_output = output
+
             tool_name = step["tool"]
 
             arguments = execute_step(
-                user_prompt=user_input,
+                user_prompt=user_prompt,
                 steps=steps,
                 previous_output=previous_output,
                 tool_name=tool_name,
@@ -50,11 +47,15 @@ def main():
                 "output": output,
             })
 
-            previous_output = output
-
     final_response = summarize_step(tool_results)
-    print("\nRespuesta:\n")
-    print(final_response)
+    return {"respuesta": final_response}
+
+def main():
+    user_input = input("Usuario: ")
+    respuesta = helia(user_input)["respuesta"]
+    print("Helia: ")
+    print(respuesta)
+
 
 if __name__ == "__main__":
     main()
